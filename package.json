@@ -1,6 +1,6 @@
 {
   "name": "@z3niths/ai-collab-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bidirectional AI collaboration system - Claude Code & GitHub Copilot execute and review each other's code",
   "main": "src/auto-watcher.js",
   "bin": {
