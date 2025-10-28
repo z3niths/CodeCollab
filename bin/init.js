@@ -27,6 +27,7 @@ const sourceDir = path.join(__dirname, '..', 'src');
 const filesToCopy = [
   'copilot-agent.js',
   'claude-reviewer.js',
+  'copilot-reviewer.js',
   'auto-watcher.js'
 ];
 
@@ -84,13 +85,25 @@ const configTemplate = {
     maxFollowUpTasks: 5,
     delayBeforeReview: 2000
   },
+  claudeReviewer: {
+    enabled: true,
+    reviewCopilotTasks: true,
+    createFollowUpTasks: true
+  },
+  copilotReviewer: {
+    enabled: true,
+    reviewClaudeTasks: true,
+    createFollowUpTasks: true,
+    detailedReview: true
+  },
   copilot: {
     allowAllTools: true,
     allowAllPaths: true
   },
   watcher: {
     interval: 2000,
-    enableAutoReview: true
+    enableAutoReview: true,
+    enableBidirectionalReview: true
   }
 };
 
@@ -132,14 +145,23 @@ if (!fs.existsSync(gitignoreFile)) {
 // Create README
 const readmeContent = `# AI Collaboration Workspace
 
-This directory contains the AI collaboration system files.
+This directory contains the BIDIRECTIONAL AI collaboration system files.
+
+## 🔄 Bidirectional Collaboration
+
+This system enables **Claude** and **Copilot** to work together autonomously:
+
+- **Copilot** executes tasks → **Claude** reviews → Creates follow-ups if needed
+- **Claude** executes tasks → **Copilot** reviews → Creates follow-ups if needed
+- Both AIs iterate until code is approved! ✅
 
 ## Files
 
 - \`tasks.json\` - Task queue for Claude and Copilot
 - \`auto-watcher.js\` - Main orchestrator (watches tasks and executes)
-- \`copilot-agent.js\` - Copilot CLI wrapper
-- \`claude-reviewer.js\` - Code review agent
+- \`copilot-agent.js\` - Copilot CLI wrapper for autonomous execution
+- \`claude-reviewer.js\` - Claude code review agent (reviews Copilot's work)
+- \`copilot-reviewer.js\` - Copilot code review agent (reviews Claude's work)
 - \`config.json\` - System configuration
 - \`claude-output.json\` - Execution logs
 - \`STOP\` - Create this file to pause the watcher
@@ -151,8 +173,29 @@ This directory contains the AI collaboration system files.
 node .ai-workspace/auto-watcher.js
 \`\`\`
 
-### Create a task:
-Edit \`tasks.json\` and add a new task object.
+### Create a task for Copilot:
+\`\`\`json
+{
+  "id": "task-001",
+  "title": "Create login page",
+  "description": "Build a login page with email and password fields",
+  "assignedTo": "copilot",
+  "status": "pending",
+  "files": ["app/login/page.tsx"]
+}
+\`\`\`
+
+### Create a task for Claude:
+\`\`\`json
+{
+  "id": "task-002",
+  "title": "Add authentication logic",
+  "description": "Implement JWT authentication",
+  "assignedTo": "claude",
+  "status": "pending",
+  "files": ["lib/auth.ts"]
+}
+\`\`\`
 
 ### Pause the watcher:
 \`\`\`bash
@@ -163,6 +206,24 @@ touch .ai-workspace/STOP
 \`\`\`bash
 rm .ai-workspace/STOP
 \`\`\`
+
+## How It Works
+
+1. **Copilot Flow:**
+   - Copilot picks up tasks with \`assignedTo: "copilot"\`
+   - Executes the task automatically
+   - Claude reviews the code
+   - If issues found, Claude creates follow-up tasks
+   - Copilot fixes the issues
+   - Repeat until Claude approves ✅
+
+2. **Claude Flow:**
+   - You execute tasks with \`assignedTo: "claude"\` via Claude Code CLI
+   - Update task status to \`"completed"\` in tasks.json
+   - Copilot automatically reviews Claude's work
+   - If issues found, Copilot creates follow-up tasks
+   - You fix the issues
+   - Repeat until Copilot approves ✅
 
 ## Documentation
 
@@ -176,8 +237,13 @@ if (!fs.existsSync(readmeFile)) {
 }
 
 console.log('\n✨ Initialization complete!\n');
+console.log('🔄 BIDIRECTIONAL AI COLLABORATION SYSTEM READY!\n');
 console.log('📋 Next steps:');
 console.log('   1. Start the watcher: node .ai-workspace/auto-watcher.js');
 console.log('   2. Create tasks in .ai-workspace/tasks.json');
-console.log('   3. Watch Copilot and Claude collaborate!\n');
+console.log('   3. Watch Copilot and Claude collaborate AND review each other!\n');
+console.log('💡 Features:');
+console.log('   - Copilot executes tasks → Claude reviews');
+console.log('   - Claude executes tasks → Copilot reviews');
+console.log('   - Both AIs iterate until code is approved ✅\n');
 console.log('📚 Documentation: .ai-workspace/README.md\n');

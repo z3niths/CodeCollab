@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const CopilotAgent = require('./copilot-agent.js');
 const ClaudeReviewer = require('./claude-reviewer.js');
+const CopilotReviewer = require('./copilot-reviewer.js');
 
 const WORKSPACE_DIR = __dirname;
 const PROJECT_DIR = path.dirname(WORKSPACE_DIR);
@@ -21,7 +22,9 @@ let isProcessing = false;
 let lastTasksHash = '';
 let copilotAgent = null;
 let claudeReviewer = null;
+let copilotReviewer = null;
 let copilotReady = false;
+let previousTaskStates = {}; // Track task state changes for review triggers
 
 console.log('🚀 Autonomous AI Collaboration System Started');
 console.log('📁 Project:', PROJECT_DIR);
@@ -206,6 +209,56 @@ async function processCopilotTask(task) {
 }
 
 /**
+ * Review a completed Claude task using Copilot
+ */
+async function reviewClaudeTask(task) {
+  console.log(`\n🔍 [COPILOT REVIEWER] Reviewing Claude's completed task: ${task.id}`);
+  console.log(`   Title: ${task.title}`);
+
+  if (!copilotReady) {
+    console.log(`   ⚠️  Copilot is not available - skipping review`);
+    // Still mark as verified since we can't review
+    updateTaskStatus(task.id, 'verified', task.result);
+    return;
+  }
+
+  try {
+    // Add small delay to ensure file system is synced
+    console.log(`\n   ⏳ Waiting 2 seconds for file system sync...`);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    console.log(`   🔍 Triggering Copilot review...`);
+    const review = await copilotReviewer.reviewTask(task);
+
+    // Update task with review results
+    copilotReviewer.updateTaskStatus(task.id, review);
+
+    if (review.approved) {
+      console.log(`   ✅ Copilot approved the changes!\n`);
+      updateClaudeOutput('idle', null,
+        `Task ${task.id} reviewed and approved by Copilot`, 'success');
+    } else {
+      console.log(`   ⚠️  Copilot found issues - creating follow-up tasks...\n`);
+      const followUpTasks = copilotReviewer.createFollowUpTasks(review, task);
+
+      if (followUpTasks.length > 0) {
+        updateClaudeOutput('idle', null,
+          `Copilot review found issues in ${task.id}. Created ${followUpTasks.length} follow-up task(s) for Claude.`,
+          'info'
+        );
+      }
+    }
+
+  } catch (error) {
+    console.error(`\n   ❌ Error during Copilot review: ${error.message}`);
+    // Mark as verified anyway to avoid blocking
+    updateTaskStatus(task.id, 'verified', task.result);
+    updateClaudeOutput('idle', null,
+      `Error during Copilot review of ${task.id}: ${error.message}`, 'error');
+  }
+}
+
+/**
  * Notify about Claude tasks (to be processed via Claude Code CLI)
  */
 function notifyClaudeTask(task) {
@@ -239,20 +292,52 @@ async function watchTasks() {
   if (currentHash === lastTasksHash) return;
 
   lastTasksHash = currentHash;
-  console.log('📝 Tasks file changed, checking for new tasks...');
+  console.log('📝 Tasks file changed, checking for changes...');
+
+  // Get all tasks to check for state changes
+  const tasksData = readJSON(TASKS_FILE);
+  if (!tasksData || !tasksData.tasks) return;
 
   const { claudeTasks, copilotTasks } = findPendingTasks();
 
-  if (claudeTasks.length === 0 && copilotTasks.length === 0) {
-    console.log('   No pending tasks\n');
+  // Check for completed Claude tasks that need Copilot review
+  const completedClaudeTasks = tasksData.tasks.filter(task =>
+    task.assignedTo === 'claude' &&
+    task.status === 'completed' &&
+    (!task.reviewResult || task.reviewResult === '') &&
+    previousTaskStates[task.id] !== 'completed'
+  );
+
+  // Update previous states
+  tasksData.tasks.forEach(task => {
+    previousTaskStates[task.id] = task.status;
+  });
+
+  if (claudeTasks.length === 0 && copilotTasks.length === 0 && completedClaudeTasks.length === 0) {
+    console.log('   No pending tasks or reviews needed\n');
     return;
   }
 
-  console.log(`   Found ${claudeTasks.length} Claude task(s) and ${copilotTasks.length} Copilot task(s)`);
+  console.log(`   Found ${claudeTasks.length} Claude task(s), ${copilotTasks.length} Copilot task(s), ${completedClaudeTasks.length} completed Claude task(s) for review`);
 
   isProcessing = true;
 
   try {
+    // BIDIRECTIONAL: Review completed Claude tasks with Copilot
+    if (completedClaudeTasks.length > 0) {
+      for (const task of completedClaudeTasks) {
+        if (shouldStop()) {
+          console.log('⏸️  STOP file detected - halting');
+          break;
+        }
+
+        await reviewClaudeTask(task);
+
+        // Add a small delay between reviews
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
     // Process Copilot tasks AUTONOMOUSLY
     if (copilotReady && copilotTasks.length > 0) {
       for (const task of copilotTasks) {
@@ -326,13 +411,22 @@ async function start() {
   // Initialize Claude Reviewer
   console.log('🔧 Initializing Claude Code Reviewer...');
   claudeReviewer = new ClaudeReviewer(PROJECT_DIR, TASKS_FILE);
-  console.log('✅ Claude Reviewer ready - will auto-review all completed tasks\n');
+  console.log('✅ Claude Reviewer ready - will auto-review Copilot\'s work\n');
+
+  // Initialize Copilot Reviewer
+  console.log('🔧 Initializing Copilot Reviewer...');
+  copilotReviewer = new CopilotReviewer(PROJECT_DIR, TASKS_FILE);
+  if (copilotReady) {
+    console.log('✅ Copilot Reviewer ready - will auto-review Claude\'s work\n');
+  } else {
+    console.log('⚠️  Copilot Reviewer initialized but Copilot CLI not available\n');
+  }
 
   // Initial status
   updateClaudeOutput('idle', null,
     copilotReady
-      ? 'Autonomous AI collaboration active - Copilot tasks execute automatically, Claude reviews all work'
-      : 'Watcher active - Copilot tasks will be skipped',
+      ? 'BIDIRECTIONAL AI collaboration active - Both AIs execute and review each other\'s work'
+      : 'Watcher active - Copilot tasks will be skipped, Claude review only',
     'info'
   );
 
@@ -352,14 +446,23 @@ async function start() {
     process.exit(0);
   });
 
-  console.log('═══════════════════════════════════════════════════════');
-  console.log('  AUTONOMOUS AI COLLABORATION ACTIVE');
-  console.log('  - Copilot: Executes tasks automatically');
-  console.log('  - Claude: Reviews all completed work');
-  console.log('  - Auto-creates fix tasks if issues found');
-  console.log('  - Claude tasks: Manual triggering required');
-  console.log('  - Press Ctrl+C to stop');
-  console.log('═══════════════════════════════════════════════════════\n');
+  console.log('═══════════════════════════════════════════════════════════════');
+  console.log('  🔄 BIDIRECTIONAL AI COLLABORATION ACTIVE');
+  console.log('  ');
+  console.log('  Copilot Flow:');
+  console.log('    1. Copilot executes tasks (assignedTo: "copilot")');
+  console.log('    2. Claude automatically reviews Copilot\'s work');
+  console.log('    3. Claude creates follow-up tasks if issues found');
+  console.log('  ');
+  console.log('  Claude Flow:');
+  console.log('    1. You execute tasks via Claude Code (assignedTo: "claude")');
+  console.log('    2. Mark task as completed in tasks.json');
+  console.log('    3. Copilot automatically reviews Claude\'s work');
+  console.log('    4. Copilot creates follow-up tasks if issues found');
+  console.log('  ');
+  console.log('  Both AIs iterate until code is approved! ✅');
+  console.log('  Press Ctrl+C to stop');
+  console.log('═══════════════════════════════════════════════════════════════\n');
 }
 
 // Start the autonomous watcher

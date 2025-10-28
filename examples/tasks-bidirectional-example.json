@@ -1,0 +1,79 @@
+{
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "Create user profile page component",
+      "description": "Create a React component for user profile page with username, email, and avatar display. Use TypeScript and include proper prop types.",
+      "assignedTo": "copilot",
+      "status": "pending",
+      "priority": "high",
+      "createdAt": "2025-10-28T00:00:00.000Z",
+      "updatedAt": "2025-10-28T00:00:00.000Z",
+      "dependencies": [],
+      "files": ["components/UserProfile.tsx"],
+      "context": "Part of the user management feature. Should follow our component structure standards.",
+      "result": null
+    },
+    {
+      "id": "task-002",
+      "title": "Add authentication middleware",
+      "description": "Implement JWT authentication middleware for Express routes. Include token validation, error handling, and user context attachment.",
+      "assignedTo": "claude",
+      "status": "pending",
+      "priority": "high",
+      "createdAt": "2025-10-28T00:05:00.000Z",
+      "updatedAt": "2025-10-28T00:05:00.000Z",
+      "dependencies": [],
+      "files": ["middleware/auth.ts"],
+      "context": "Security critical - ensure proper validation and error messages.",
+      "result": null
+    },
+    {
+      "id": "task-003",
+      "title": "Design database schema for user settings",
+      "description": "Create a database migration file for user settings table. Include fields for theme preference, notification settings, and privacy options.",
+      "assignedTo": "copilot",
+      "status": "pending",
+      "priority": "medium",
+      "createdAt": "2025-10-28T00:10:00.000Z",
+      "updatedAt": "2025-10-28T00:10:00.000Z",
+      "dependencies": [],
+      "files": ["migrations/create-user-settings.sql"],
+      "context": "PostgreSQL database. Use best practices for nullable fields and defaults.",
+      "result": null
+    },
+    {
+      "id": "task-004",
+      "title": "Create API endpoint for user profile updates",
+      "description": "Build a PUT endpoint at /api/users/:id that allows updating user profile information. Include validation, error handling, and proper status codes.",
+      "assignedTo": "claude",
+      "status": "pending",
+      "priority": "medium",
+      "createdAt": "2025-10-28T00:15:00.000Z",
+      "updatedAt": "2025-10-28T00:15:00.000Z",
+      "dependencies": ["task-001"],
+      "files": ["api/users.ts"],
+      "context": "Should integrate with the UserProfile component from task-001.",
+      "result": null
+    },
+    {
+      "id": "task-005",
+      "title": "Add unit tests for authentication flow",
+      "description": "Write comprehensive unit tests for the authentication middleware using Jest. Cover success cases, invalid tokens, expired tokens, and missing tokens.",
+      "assignedTo": "copilot",
+      "status": "pending",
+      "priority": "high",
+      "createdAt": "2025-10-28T00:20:00.000Z",
+      "updatedAt": "2025-10-28T00:20:00.000Z",
+      "dependencies": ["task-002"],
+      "files": ["__tests__/auth.test.ts"],
+      "context": "Depends on the auth middleware from task-002 being completed.",
+      "result": null
+    }
+  ],
+  "metadata": {
+    "lastTaskId": 5,
+    "version": "1.0.0",
+    "description": "Example demonstrating bidirectional AI collaboration between Claude and Copilot"
+  }
+}
