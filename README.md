@@ -18,6 +18,7 @@ A file-based task queue system that enables Claude Code and GitHub Copilot to wo
 ## How It Works
 
 **Copilot Flow:**
+
 ```
 You create task → Copilot executes → Claude reviews →
   ✅ Approved → Done!
@@ -25,6 +26,7 @@ You create task → Copilot executes → Claude reviews →
 ```
 
 **Claude Flow:**
+
 ```
 You create task → Claude executes → Copilot reviews →
   ✅ Approved → Done!
@@ -44,10 +46,10 @@ You create task → Claude executes → Copilot reviews →
 
 ```bash
 # Install globally
-npm install -g @ai-collab/task-system
+npm install -g @z3niths/ai-collab-system
 
 # Or install in your project
-npm install --save-dev @ai-collab/task-system
+npm install --save-dev @z3niths/ai-collab-system
 ```
 
 ## Quick Start
@@ -60,6 +62,7 @@ ai-collab init
 ```
 
 This creates:
+
 - `.ai-workspace/` directory
 - `tasks.json` - task queue file
 - Configuration files
@@ -181,9 +184,9 @@ module.exports = {
     {
       name: "No TODO comments",
       check: (content) => !content.includes("TODO"),
-      message: "Remove TODO comments before completion"
-    }
-  ]
+      message: "Remove TODO comments before completion",
+    },
+  ],
 };
 ```
 
@@ -197,6 +200,7 @@ module.exports = {
 ### Example: Claude Task with Copilot Review
 
 **Step 1:** Create a task for Claude:
+
 ```json
 {
   "id": "task-001",
@@ -211,6 +215,7 @@ module.exports = {
 **Step 2:** Execute the task using Claude Code CLI
 
 **Step 3:** Mark the task as completed in `tasks.json`:
+
 ```json
 {
   "id": "task-001",
@@ -220,6 +225,7 @@ module.exports = {
 ```
 
 **Step 4:** Copilot automatically reviews Claude's work!
+
 - ✅ If approved: Task marked as `verified`
 - ⚠️ If issues found: Copilot creates follow-up tasks for Claude to fix
 
@@ -228,6 +234,7 @@ module.exports = {
 ### Example: Copilot Task with Claude Review
 
 **Step 1:** Create a task for Copilot:
+
 ```json
 {
   "id": "task-002",
@@ -242,6 +249,7 @@ module.exports = {
 **Step 2:** Copilot automatically executes the task
 
 **Step 3:** Claude automatically reviews Copilot's work!
+
 - ✅ If approved: Task marked as `verified`
 - ⚠️ If issues found: Claude creates follow-up tasks for Copilot to fix
 
@@ -271,6 +279,7 @@ module.exports = {
 ```
 
 **Result:**
+
 - Copilot creates the page
 - Claude reviews for errors
 - If issues found, creates fix tasks
@@ -359,6 +368,7 @@ Task-002 waits until task-001 is completed.
 ### Review False Positives
 
 If Claude flags valid code:
+
 1. Check review notes in `tasks.json`
 2. Adjust strictness in config
 3. Manually mark as verified if incorrect
@@ -366,6 +376,7 @@ If Claude flags valid code:
 ### Infinite Task Loops
 
 The system has built-in loop prevention (max 5 attempts). If it triggers:
+
 1. Check Copilot permissions
 2. Review the error pattern in task history
 3. Manually fix the issue
@@ -390,10 +401,10 @@ your-project/
 ### CopilotAgent
 
 ```javascript
-const CopilotAgent = require('.ai-workspace/copilot-agent');
+const CopilotAgent = require(".ai-workspace/copilot-agent");
 const agent = new CopilotAgent({ workingDir: process.cwd() });
 
-await agent.executeTask('Create a hello world function');
+await agent.executeTask("Create a hello world function");
 ```
 
 ### ClaudeReviewer
@@ -401,12 +412,12 @@ await agent.executeTask('Create a hello world function');
 Reviews Copilot's completed tasks:
 
 ```javascript
-const ClaudeReviewer = require('.ai-workspace/claude-reviewer');
+const ClaudeReviewer = require(".ai-workspace/claude-reviewer");
 const reviewer = new ClaudeReviewer(workingDir, tasksFile);
 
 const review = await reviewer.reviewTask(task);
 console.log(review.approved); // true/false
-console.log(review.issues);   // Array of issues found
+console.log(review.issues); // Array of issues found
 console.log(review.suggestions); // Array of suggestions
 ```
 
@@ -415,12 +426,12 @@ console.log(review.suggestions); // Array of suggestions
 Reviews Claude's completed tasks:
 
 ```javascript
-const CopilotReviewer = require('.ai-workspace/copilot-reviewer');
+const CopilotReviewer = require(".ai-workspace/copilot-reviewer");
 const reviewer = new CopilotReviewer(workingDir, tasksFile);
 
 const review = await reviewer.reviewTask(task);
 console.log(review.approved); // true/false
-console.log(review.issues);   // Array of issues found
+console.log(review.issues); // Array of issues found
 console.log(review.suggestions); // Array of suggestions
 ```
 

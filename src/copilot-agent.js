@@ -105,9 +105,9 @@ class CopilotAgent {
       // CRITICAL: Even with --allow-all-tools, we need EXPLICIT tool permissions
       // --allow-all-tools = "no confirmation needed"
       // But we still need to explicitly allow which tools CAN be used
-      command += " --allow-tool 'write'";   // File create/edit permission
-      command += " --allow-tool 'shell'";   // Shell command permission (mkdir, etc)
-      command += " --allow-tool 'read'";    // File read permission
+      command += " --allow-tool write";   // File create/edit permission
+      command += " --allow-tool shell";   // Shell command permission (mkdir, etc)
+      command += " --allow-tool read";    // File read permission
 
       // Add working directory to allowed directories to prevent "outside allowed directories" prompts
       command += ` --add-dir "${this.workingDir}"`;
@@ -120,7 +120,7 @@ class CopilotAgent {
       // Add specific allowed tools only if explicitly provided
       if (options.allowedTools && options.allowedTools.length > 0) {
         options.allowedTools.forEach(tool => {
-          command += ` --allow-tool "${tool}"`;
+          command += ` --allow-tool ${tool}`;
         });
       }
 

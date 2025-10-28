@@ -26,6 +26,7 @@ Commands:
   create-task       Create a new task
   logs              View execution logs
   help              Show this help
+  --version, -v     Show version number
 
 Examples:
   ai-collab init
@@ -33,6 +34,11 @@ Examples:
   ai-collab create-task --title "Add login page" --assignedTo copilot
   ai-collab logs --tail 20
 `);
+}
+
+function showVersion() {
+  const packageJson = require(path.join(__dirname, '..', 'package.json'));
+  console.log(`v${packageJson.version}`);
 }
 
 function checkWorkspace() {
@@ -226,6 +232,10 @@ switch (command) {
     break;
   case 'logs':
     showLogs();
+    break;
+  case '--version':
+  case '-v':
+    showVersion();
     break;
   case 'help':
   case undefined:

@@ -5,6 +5,7 @@ Get up and running with AI Collaboration System in 5 minutes!
 ## Prerequisites
 
 1. **Install GitHub Copilot CLI:**
+
    ```bash
    # Check if installed
    copilot --version
@@ -14,6 +15,7 @@ Get up and running with AI Collaboration System in 5 minutes!
    ```
 
 2. **Ensure you have Claude Code:**
+
    - Download from https://claude.com/claude-code
 
 3. **Git repository:**
@@ -23,11 +25,11 @@ Get up and running with AI Collaboration System in 5 minutes!
 
 ```bash
 # Option 1: Global installation
-npm install -g @ai-collab/task-system
+npm install -g @z3niths/ai-collab-system
 
 # Option 2: Project installation
 cd your-project
-npm install --save-dev @ai-collab/task-system
+npm install --save-dev @z3niths/ai-collab-system
 ```
 
 ## Setup (2 minutes)
@@ -48,11 +50,13 @@ ai-collab start
 ```
 
 Or manually:
+
 ```bash
 node .ai-workspace/auto-watcher.js
 ```
 
 You should see:
+
 ```
 🚀 Autonomous AI Collaboration System Started
 ✅ Copilot Agent is ready for autonomous task execution
@@ -180,6 +184,7 @@ ai-collab status
 ```
 
 Output:
+
 ```
 📊 AI Collaboration System Status
 
@@ -239,6 +244,7 @@ copilot -p "Say hello"
 ### Permission errors?
 
 The system is configured to run with full permissions:
+
 - `--allow-all-tools`
 - `--allow-tool 'write'`
 - `--allow-tool 'shell'`

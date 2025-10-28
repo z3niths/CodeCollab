@@ -38,7 +38,7 @@ ai-collab-system/
 ### For New Projects
 
 ```bash
-npm install -g @ai-collab/task-system
+npm install -g @z3niths/ai-collab-system
 cd your-project
 ai-collab init
 ai-collab start
@@ -75,11 +75,12 @@ your-project/
 ### Before First Publish
 
 1. Update `package.json`:
+
    - Change name if needed
-   - Update author
    - Update repository URL
 
 2. Create npm account if needed:
+
    ```bash
    npm adduser
    ```
@@ -113,7 +114,7 @@ ai-collab start
 ### Example 2: React Project
 
 ```bash
-cd my-react-app  
+cd my-react-app
 ai-collab init
 ai-collab create-task --title "Create login component" --assignedTo copilot
 ai-collab start
@@ -142,13 +143,17 @@ node ../.ai-workspace/auto-watcher.js
 ## Distribution Methods
 
 ### Method 1: NPM Package (Recommended)
+
 Users install via npm and use CLI commands.
 
 ### Method 2: GitHub Template
+
 Create a template repository users can clone.
 
 ### Method 3: Copy Script
+
 Provide a one-liner that downloads and sets up:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/user/repo/main/install.sh | bash
 ```
@@ -156,11 +161,13 @@ curl -fsSL https://raw.githubusercontent.com/user/repo/main/install.sh | bash
 ## Benefits
 
 ### For You (Original Project)
+
 - Keep using your customized version
 - Pull updates from this repo when needed
 - Contribute improvements back
 
 ### For Other Projects
+
 - Easy installation
 - No manual file copying
 - Automatic updates via npm
@@ -181,10 +188,12 @@ curl -fsSL https://raw.githubusercontent.com/user/repo/main/install.sh | bash
 Your original project can stay independent or link to this package:
 
 **Option A: Independent**
+
 - Keep `.ai-workspace/` as is
 - Manually copy updates when desired
 
 **Option B: Linked**
+
 - Install this package in your project
 - Let it manage `.ai-workspace/`
 - Get automatic updates
@@ -213,10 +222,6 @@ ai-collab help              # Show help
 ## License
 
 MIT - Free to use, modify, and distribute
-
-## Author
-
-Your Name <your@email.com>
 
 ## Contributing
 

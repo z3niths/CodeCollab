@@ -6,10 +6,10 @@ Once published to npm:
 
 ```bash
 # Global installation
-npm install -g @ai-collab/task-system
+npm install -g @z3niths/ai-collab-system
 
 # Project-specific installation
-npm install --save-dev @ai-collab/task-system
+npm install --save-dev @z3niths/ai-collab-system
 ```
 
 ## Method 2: From Source
@@ -65,6 +65,7 @@ npm publish --access public
 
 - **Node.js**: 16.0.0 or higher
 - **GitHub Copilot CLI**: Required for autonomous execution
+
   ```bash
   # Install Copilot CLI
   # Visit: https://github.com/features/copilot
@@ -72,6 +73,7 @@ npm publish --access public
   # Verify
   copilot --version
   ```
+
 - **Git**: Project must be a git repository
 - **Claude Code** (optional): For manual task execution via CLI
 
@@ -100,13 +102,13 @@ export PATH="$PATH:$(npm config get prefix)/bin"
 On macOS/Linux, you may need:
 
 ```bash
-sudo npm install -g @ai-collab/task-system
+sudo npm install -g @z3niths/ai-collab-system
 ```
 
 Or use npx without installation:
 
 ```bash
-npx @ai-collab/task-system init
+npx @z3niths/ai-collab-system init
 ```
 
 ### Windows PowerShell execution policy
@@ -121,20 +123,20 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ```bash
 # Global
-npm update -g @ai-collab/task-system
+npm update -g @z3niths/ai-collab-system
 
 # Project
-npm update @ai-collab/task-system
+npm update @z3niths/ai-collab-system
 ```
 
 ## Uninstallation
 
 ```bash
 # Global
-npm uninstall -g @ai-collab/task-system
+npm uninstall -g @z3niths/ai-collab-system
 
 # Project
-npm uninstall @ai-collab/task-system
+npm uninstall @z3niths/ai-collab-system
 
 # Clean up
 rm -rf .ai-workspace/
