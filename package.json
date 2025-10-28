@@ -1,8 +1,8 @@
 {
-  "name": "@ai-collab/task-system",
+  "name": "@z3niths/ai-collab-system",
   "version": "1.0.0",
-  "description": "Autonomous AI collaboration system - Claude Code + GitHub Copilot working together via file-based task queue",
-  "main": "dist/index.js",
+  "description": "Bidirectional AI collaboration system - Claude Code & GitHub Copilot execute and review each other's code",
+  "main": "src/auto-watcher.js",
   "bin": {
     "ai-collab": "./bin/cli.js"
   },
@@ -18,17 +18,31 @@
     "automation",
     "collaboration",
     "task-queue",
-    "code-generation"
+    "code-generation",
+    "bidirectional",
+    "code-review",
+    "autonomous",
+    "ai-agents"
   ],
-  "author": "Your Name",
+  "author": "z3niths",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/ai-collab-system.git"
+    "url": "https://github.com/z3niths/ai-collab-system.git"
   },
+  "bugs": {
+    "url": "https://github.com/z3niths/ai-collab-system/issues"
+  },
+  "homepage": "https://github.com/z3niths/ai-collab-system#readme",
   "engines": {
     "node": ">=16.0.0"
   },
+  "files": [
+    "src/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
   "peerDependencies": {
     "copilot": ">=0.0.300"
   },

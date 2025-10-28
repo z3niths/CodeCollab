@@ -1,6 +1,10 @@
 test-project/
 tests/
+examples/
 .git/
 .github/
 *.log
 .DS_Store
+node_modules/
+.ai-workspace/
+*.tgz
