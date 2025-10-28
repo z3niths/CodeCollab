@@ -1,0 +1,37 @@
+{
+  "name": "@ai-collab/task-system",
+  "version": "1.0.0",
+  "description": "Autonomous AI collaboration system - Claude Code + GitHub Copilot working together via file-based task queue",
+  "main": "dist/index.js",
+  "bin": {
+    "ai-collab": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node src/auto-watcher.js",
+    "init": "node bin/init.js",
+    "test": "node tests/test.js"
+  },
+  "keywords": [
+    "ai",
+    "copilot",
+    "claude",
+    "automation",
+    "collaboration",
+    "task-queue",
+    "code-generation"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-collab-system.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "peerDependencies": {
+    "copilot": ">=0.0.300"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

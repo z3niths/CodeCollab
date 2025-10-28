@@ -1,0 +1,6 @@
+test-project/
+tests/
+.git/
+.github/
+*.log
+.DS_Store
