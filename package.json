@@ -43,9 +43,6 @@
     "README.md",
     "LICENSE"
   ],
-  "peerDependencies": {
-    "copilot": ">=0.0.300"
-  },
   "dependencies": {},
   "devDependencies": {}
 }
